@@ -1,0 +1,72 @@
+{% extends "book_register/base.html" %}
+
+
+{% block content %}
+<center>
+    {% if searched %}
+        {% if books %}
+            <h2>You Searched For "{{ searched }}"</h2>
+            <br/>
+            <form class="d-flex" method=POST action="{% url 'search_books' %}">
+                {% csrf_token %}
+                <input class="form-control me-2" type="search" placeholder="Search by the Name or Genre" aria-label="Search" name="searched">
+                <button class="btn btn-secondary" type="submit">Search</button>
+            </form>
+            <table class="table table-borderless">
+                <thead class="border-bottom font-weight-bold">
+                    <tr>
+                        <td style="color:darkblue;">Name</td>
+                        <td style="color:darkblue;">Author</td>
+                        <td style="color:darkblue;">Genre</td>
+                        <td style="color:darkblue;">Height</td>
+                        <td style="color:darkblue;">Publisher</td>
+                        <td>
+                            <a href="{% url 'book_insert' %}" class="btn btn-outline-success">
+                                <i class="fas fa-plus-circle"></i> Add New
+                            </a>
+                        </td>
+                    </tr>
+                </thead>
+                {% for book in books %}
+                <tbody>
+                        <tr>
+                            <td>{{book.name}}</td>
+                            <td>{{book.author}}</td>
+                            <td>{{book.genre}}</td>
+                            <td>{{book.height}}</td>
+                            <td>{{book.publisher}}</td>
+                            <td>
+                                <a href="{% url 'book_update' book.id %}" class="btn text-secondary px-0">
+                                    <i class="fas fa-pen-square"></i> Edit
+                                </a>
+                                <form action="{% url 'book_delete' book.id %}" method="post" class="d-inline">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn" onclick="return confirm('Are you sure you want to delete the book, {{ book.name }}?')">
+                                        <i class="fas fa-minus-circle text-danger"></i>
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                
+                {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+        <h3>You Searched For "{{ searched }}"</h3>
+        <h4>No matches were found.....! </h4>
+        <form class="d-flex" method=POST action="{% url 'search_books' %}">
+            {% csrf_token %}
+            <input class="form-control me-2" type="search" placeholder="Search by the Name or Genre" aria-label="Search" name="searched">
+            <button class="btn btn-secondary" type="submit">Search</button>
+        </form>
+        {% endif %}
+    {% else %}
+        <h3>Hey! You Forget To Searched For A Book !!</h3>
+        <form class="d-flex" method=POST action="{% url 'search_books' %}">
+            {% csrf_token %}
+            <input class="form-control me-2" type="search" placeholder="Search by the Name or Genre" aria-label="Search" name="searched">
+            <button class="btn btn-secondary" type="submit">Search</button>
+        </form>
+    {% endif %}
+</center>
+{% endblock content %}
